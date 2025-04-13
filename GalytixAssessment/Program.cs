@@ -1,6 +1,10 @@
+using FluentValidation;
 using GalytixAssessment.Csv;
+using GalytixAssessment.Dtos;
+using GalytixAssessment.Models;
 using GalytixAssessment.Repositories;
 using GalytixAssessment.Services;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +13,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 
-builder.Services.AddSingleton(provider =>
+builder.Services.AddValidatorsFromAssemblyContaining<GwpInputDtoValidator>();
+
+builder.Services.AddSingleton<IGwpByCountryDataSet, GwpByCountryDataSet>(provider =>
 {
     return CsvDataLoader.LoadCsv("Csv/gwpByCountry.csv");
 });

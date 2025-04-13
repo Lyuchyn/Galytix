@@ -1,6 +1,6 @@
 ﻿namespace GalytixAssessment.Models
 {
-    public class GwpByCountryDataSet
+    public class GwpByCountryDataSet : IGwpByCountryDataSet
     {
         public List<GwpByCountry> GwpRecords { get; set; } = [];
     }

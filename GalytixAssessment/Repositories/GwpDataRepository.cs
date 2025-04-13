@@ -2,7 +2,7 @@
 
 namespace GalytixAssessment.Repositories
 {
-    public class GwpDataRepository(GwpByCountryDataSet gwpByCountryDataSet) : IGwpDataRepository
+    public class GwpDataRepository(IGwpByCountryDataSet gwpByCountryDataSet) : IGwpDataRepository
     {
         public Task<List<GwpByCountry>> GetGwpByCountryAndLob(string country, string[] lineOfBusiness)
         {
@@ -11,10 +11,7 @@ namespace GalytixAssessment.Repositories
                 throw new ArgumentException($"'{nameof(country)}' cannot be null or whitespace.", nameof(country));
             }
 
-            if (lineOfBusiness is null)
-            {
-                throw new ArgumentNullException(nameof(lineOfBusiness));
-            }
+            ArgumentNullException.ThrowIfNull(lineOfBusiness);
 
             var data = gwpByCountryDataSet.GwpRecords
                 .Where(x => country.Equals(x.Country, StringComparison.OrdinalIgnoreCase))
